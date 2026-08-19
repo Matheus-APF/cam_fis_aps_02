@@ -24,23 +24,42 @@ def main():
         # Aguarda indefinidamente o primeiro dado
         while com1.rx.getBufferLen() == 0:
             time.sleep(0.01)
+
         print("Primeiro dado recebido")
 
-        # A partir daqui começa o timeout
-        ultimo_tamanho = com1.rx.getBufferLen()
+        rxBuffer = bytearray()
         tempo_inicio = time.time()
 
         while True:
+
             tamanho_atual = com1.rx.getBufferLen()
-            # Se chegou dado novo, reinicia o timeout
-            if tamanho_atual > ultimo_tamanho:
-                ultimo_tamanho = tamanho_atual
+
+            if tamanho_atual > 0:
+
+                dados, nRx = com1.getData(tamanho_atual)
+                rxBuffer.extend(dados)
+
+                # Reinicia timeout sempre que chegam dados
                 tempo_inicio = time.time()
-            # Se ficou 5 segundos sem receber nada novo,
-            # considera que a transmissão terminou
-            if time.time() - tempo_inicio > 5:
+
+                # Verifica marcador de fim: 4 bytes iguais a 1
+                if len(rxBuffer) >= 4 and rxBuffer[-4:] == bytearray([1, 1, 1, 1]):
+
+                    print("Marcador de fim detectado")
+
+                    # Remove o marcador para não ser interpretado como float
+                    rxBuffer = rxBuffer[:-4]
+
+                    break
+
+            # Timeout continua existindo apenas como segurança
+            if time.time() - tempo_inicio > 1:
+                print("Timeout de recepção")
                 break
+
             time.sleep(0.01)
+
+        print("recebeu {} bytes".format(len(rxBuffer)))
 
         # DADOS
         rxBuffer, nRx = com1.getData(com1.rx.getBufferLen())

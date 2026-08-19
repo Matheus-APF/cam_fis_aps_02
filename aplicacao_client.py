@@ -13,7 +13,7 @@ def main():
         # -- COMUNICAÇÃO --
         # ESTABELECER
         print("Iniciou o main")
-        serialName = "COM7" 
+        serialName = "COM8" 
         com1 = enlace(serialName)
         com1.enable()
         print("Abriu a comunicação")
@@ -27,6 +27,9 @@ def main():
             numero = np.float32(np.random.uniform(-1000, 1000))
             numeros.append(numero)
             txBuffer.extend(numero.tobytes())
+
+        # Marcador de fim da transmissão
+        txBuffer.extend([1, 1, 1, 1])
 
         txBuffer = np.asarray(txBuffer, dtype=np.uint8)
 
@@ -50,6 +53,7 @@ def main():
         # Timeout Server
         tempo_inicio = time.time()
         while com1.rx.getBufferLen() == 0:
+            print(time.time())
             if time.time() - tempo_inicio > 5:
                 print("Timeout: nenhum dado recebido em 5 segundos")
                 return
