@@ -12,7 +12,7 @@ def main():
         # -- COMUNICAÇÃO --
         # ESTABELECER
         print("Iniciou o main")
-        serialName = "COM8"   # Ajustar para a porta do servidor
+        serialName = "COM4"   # Ajustar para a porta do servidor
         com1 = enlace(serialName)
         com1.enable()
         print("Abriu a comunicação")
@@ -59,10 +59,6 @@ def main():
 
             time.sleep(0.01)
 
-        print("recebeu {} bytes".format(len(rxBuffer)))
-
-        # DADOS
-        rxBuffer, nRx = com1.getData(com1.rx.getBufferLen())
         print("recebeu {} bytes".format(len(rxBuffer)))
 
         # VALIDACAO

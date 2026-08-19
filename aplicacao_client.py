@@ -58,6 +58,7 @@ def main():
                 print("Timeout: nenhum dado recebido em 5 segundos")
                 return
             time.sleep(0.01)
+            
         # Dados
         rxBuffer, nRx = com1.getData(com1.rx.getBufferLen())
         print("recebeu {} bytes".format(len(rxBuffer)))
